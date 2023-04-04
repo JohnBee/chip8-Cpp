@@ -33,3 +33,7 @@
 
 # vscode
 .vscode
+
+# SDL2
+SDL2
+SDL2.dll

@@ -4,7 +4,9 @@ MKDIR = mkdir -p
 
 
 CXX=g++
-INC=./include
+INC=F:\mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0\mingw64\include\
+
+LOCAL_HEADERS=./include
 
 EXE = chip8-emu.exe
 BIN=./bin
@@ -17,7 +19,7 @@ SOURCES = $(SRC_DIR)/chip8.cpp
 OBJS = $(addprefix $(BUILD_DIR)/, $(addsuffix .o, $(basename $(notdir $(SOURCES)))))
 LIBS = -L./lib 
 CXXFLAGS =-fdiagnostics-color=always
-CXXFLAGS += -std=c++11 -I$(INC)
+CXXFLAGS += -std=c++11 -I$(INC) -I$(LOCAL_HEADERS)
 CXXFLAGS += -g -Wall -Wformat
 
 
@@ -28,6 +30,9 @@ else
 # "Release" build - optimization, and no debug symbols
 	CFLAGS += -O2 -s -DNDEBUG
 endif
+
+ECHO_MESSAGE = "MinGW"
+LIBS += -lmingw32 -lSDL2main -lSDL2
 
 # CXXFLAGS += `pkg-config --cflags glfw3`
 CFLAGS = $(CXXFLAGS)
