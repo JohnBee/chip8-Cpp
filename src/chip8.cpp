@@ -1,38 +1,50 @@
 #include <iostream>
 #include <SDL2\SDL.h>
+#include <fstream>
+#include <exception>
+#include <vector>
+#include <memory>
+
 #include "system.h"
+#include "romHandler.h"
+
+void setupGraphics(){};
+void setupInput(){};
+
+
+
+using namespace std;
+
 
 
 int main(int argv, char** args)
 {
-    // if(SDL_Init(SDL_INIT_VIDEO) < 0)
-    // {
-    //     std::cout << "Failed to initialize the SDL2 library\n";
-    //     return -1;
-    // }
+    //load game
+    romBuffer rb;
+    if(argv == 1){
+        std::cout << "Missing ROM from Parameter." << std::endl;
+        return 1;
+    }
+    else{
+        rb = readROM(args[1]);
+    }
+    
 
-    // SDL_Window *window = SDL_CreateWindow("SDL2 Window",
-    //                                       SDL_WINDOWPOS_CENTERED,
-    //                                       SDL_WINDOWPOS_CENTERED,
-    //                                       680, 480,
-    //                                       0);
 
-    // if(!window)
-    // {
-    //     std::cout << "Failed to create window\n";
-    //     return -1;
-    // }
 
-    // SDL_Surface *window_surface = SDL_GetWindowSurface(window);
+    setupGraphics();
+    setupInput();
+    
+    System chip8;
+    chip8.initialise(rb);
+    delete(rb.buffer); // we're done with the buffer clean up;
 
-    // if(!window_surface)
-    // {
-    //     std::cout << "Failed to get the surface from the window\n";
-    //     return -1;
-    // }
+    if(chip8.drawFlag){
+        // Draw graphics
+    }
+    std::cout << argv << std::endl;
+    std::cout << args[0] << std::endl;
 
-    // SDL_UpdateWindowSurface(window);
 
-    // SDL_Delay(5000);
     return 0;
 }

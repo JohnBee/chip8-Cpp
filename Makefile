@@ -15,7 +15,7 @@ SRC_DIR = ./src
 
 DIRS = $(BUILD_DIR) $(BIN)
 
-SOURCES = $(SRC_DIR)/chip8.cpp
+SOURCES = $(wildcard $(SRC_DIR)/*.cpp)
 OBJS = $(addprefix $(BUILD_DIR)/, $(addsuffix .o, $(basename $(notdir $(SOURCES)))))
 LIBS = -L./lib 
 CXXFLAGS =-fdiagnostics-color=always
