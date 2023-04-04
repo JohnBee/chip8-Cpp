@@ -1,48 +1,3 @@
-# .PHONY: all clean debug
-
-
-
-# CC=g++
-# CXXFLAGS=-fdiagnostics-color=always
-# SRCDIR=./src
-# IMGUIDIR=$(SRCDIR)/imgui
-# BIN=./bin
-# PROG=serialcommander.exe
-# INC=-I./include
-# LIBS = -L./lib 
-# LIBS += -lglfw3 -lgdi32 -lopengl32 -limm32
-
-
-# ifeq ($(BUILD),debug)   
-# # "Debug" build - no optimization, and debugging symbols
-# 	CXXFLAGS += -DDEBUG -g
-# else
-# # "Release" build - optimization, and no debug symbols
-# 	CFLAGS += -O2 -s -DNDEBUG
-# endif
-
-# all: $(PROG)
-
-# debug: 
-# 	make "BUILD=debug"
-
-# src = $(wildcard $(addsuffix /*.cpp,$(SRCDIR) $(IMGUIDIR)))
-
-# obj = $(src:.c=.o)
-
-
-
-# $(PROG): $(obj)
-# 	$(CC) $(CXXFLAGS) $(INC) -o $(BIN)/$(PROG) $(obj) $(LIBS)
-
-# %.o: %.c
-# 	$(CC) $(CXXFLAGS) $(INC) -c -o $@ $^ $(LIBS)
-
-# clean: 
-# 	del $(BIN)/$(PROG)
-
-
-
 .PHONY: all clean debug
 
 MKDIR = mkdir -p
@@ -51,7 +6,7 @@ MKDIR = mkdir -p
 CXX=g++
 INC=./include
 
-EXE = serialcommander.exe
+EXE = chip8-emu.exe
 BIN=./bin
 BUILD_DIR=./build
 SRC_DIR = ./src
