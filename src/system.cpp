@@ -3,7 +3,7 @@
 #include <iomanip>
 #include <stdlib.h>
 #include <time.h>
-
+#include <cstring>
 
 unsigned char chip8_fontset[80] =
 { 
@@ -25,7 +25,7 @@ unsigned char chip8_fontset[80] =
   0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
 
-
+unsigned char lastRandom = 0;
 
 // opcode handler
 void System::unknownOpcode(unsigned short opcode){
@@ -37,6 +37,7 @@ void System::unknownOpcode(unsigned short opcode){
 
 void System::opcodeHandler(unsigned short opcode){
     // Fixed opcode
+    // unknownOpcode(opcode);
     if(opcode == 0x00E0){
         // clear the screen;
         pc +=2;
@@ -75,11 +76,11 @@ void System::opcodeHandler(unsigned short opcode){
         }
         return;
     }
-    if((opcode & 0xF000) == 0x4000){ // skip next insutrction if VX != NN
+    if((opcode & 0xF000) == 0x4000){ // skip next instruction if VX != NN
         unsigned char vx = V[(opcode & 0x0F00) >> 8];
         unsigned char nn = (opcode & 0x00FF);
         if(vx != nn){
-            pc+=4;
+            pc += 4;
         }
         else{
             pc +=2;
@@ -199,7 +200,7 @@ void System::opcodeHandler(unsigned short opcode){
             case 0x000E:{ //0x8XYE store msb of Vx to VF. left shift VX by 1.
                 unsigned char vx = (opcode & 0x0F00) >> 8;
                 // unsigned char vy = (opcode & 0x00F0) >> 4;
-                V[0xF] = V[vx] & 0x80;
+                V[0xF] = (V[vx] & 0x80) != 0;
                 V[vx] <<= 1;
                 pc+=2;
                 return;
@@ -222,21 +223,22 @@ void System::opcodeHandler(unsigned short opcode){
         return;
     }
     if((opcode & 0xF000) == 0xA000){ // 0xANNN Sets I to the address NNN
-        unsigned char nnn = (opcode & 0x0FFF);
+        unsigned short nnn = (opcode & 0x0FFF);
         I = nnn;
         pc +=2;
         return;
     }
     if((opcode & 0xF000) == 0xB000){ // 0xBNNN Jumps to the address NNN plus V0. 
-        unsigned char nnn = (opcode & 0x0FFF);
+        unsigned short nnn = (opcode & 0x0FFF);
         pc = nnn + V[0]; 
         return;
     }
     if((opcode & 0xF000) == 0xC000){ // 0xCXNN Sets VX to the result of a bitwise and operation on a random number (Typically: 0 to 255) and NN. 
         unsigned char vx = (opcode & 0x0F00) >> 8;
         unsigned char nn = (opcode & 0x00FF);
-        std::srand (std::time(NULL));
+        std::srand (std::time(NULL) + lastRandom);
         unsigned char r = rand() % 255;
+        lastRandom = r;
         V[vx] = nn & r;
         pc +=2;
         return;
@@ -254,13 +256,20 @@ void System::opcodeHandler(unsigned short opcode){
         V[0xF] = 0;
         for(char yline = 0; yline < n; yline++){
             pixelLine = memory[I + yline];
-            for(char xline = 0; xline < 8 && x + xline < 64; xline++){
+            for(char xline = 0; xline < 8 && (x + xline < 64); xline++){
                 pixelStatus = pixelLine & (0x80 >> xline); // check pixels left to right
-                if((gfx[x + xline + (y + yline) * 64]) == 1 && pixelStatus == 0){
+                if(pixelStatus != 0){
+                    if((gfx[x + xline + (y + yline) * 64]) == 1){
                     // pixel changed from set to unset, therefore flag
-                    V[0xF] = 1;
+                        gfx[x + xline + (y + yline) * 64] = 0;
+                        V[0xF] = 1;
+                    }
+                    else{
+                        gfx[x + xline + (y + yline) * 64] = 1;
+                    }
                 }
-                gfx[x + xline + (y + yline) * 64] = pixelStatus; //update pixel status
+                
+                
             }
         }
         drawFlag = true;
@@ -380,6 +389,8 @@ void System::initialise(romBuffer buffer){
     I = 0;
     sp = 0;
 
+    memset(memory, 0, 4096);
+    memset(gfx, 0, 64*32);
     // load fontset
     for(int i = 0; i < 80; ++i)
         memory[i] = chip8_fontset[i];	

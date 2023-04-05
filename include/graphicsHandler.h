@@ -6,10 +6,10 @@
 
 extern SDL_Window* gWindow;
 extern SDL_Surface* gScreenSurface;
-extern SDL_Surface* gHelloWorld;
+extern SDL_Renderer* gRenderer;
 
 namespace GFX {
-    bool init(System * sys);
+    bool init(System *sys);
     void renderLoop();
     void close();
 }
