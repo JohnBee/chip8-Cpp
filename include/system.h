@@ -21,7 +21,8 @@ class System {
         unsigned char delay_timer;
         unsigned char sound_timer;
         // return stack
-        unsigned short stack[16];
+        // unsigned short stack[16];
+        std::vector<short> stack;
         // stack pointer
         unsigned short sp;
 
@@ -30,6 +31,8 @@ class System {
         
 
     public:
+        void opcodeHandler(unsigned short opcode);
+        void unknownOpcode(unsigned short opcode);
         void initialise(romBuffer buffer);
         void cycle();
         void setKeys();
