@@ -21,6 +21,7 @@ const int SCREEN_HEIGHT = 320;
 const int xPixScale = SCREEN_WIDTH / 64;
 const int yPixScale = SCREEN_HEIGHT / 32;
 
+
 auto last = std::chrono::high_resolution_clock::now();
 
 
@@ -85,6 +86,22 @@ namespace GFX {
                         {
                             quit = true;
                         }
+                        if(e.type == SDL_KEYDOWN) //handle keyboard printable keys are 33 - 126
+                        {
+                            if(e.key.keysym.sym >= 33 && e.key.keysym.sym <= 126)
+                            {
+                                std::cout << (char)e.key.keysym.sym << std::endl;
+                                chip8->keyDown(e.key.keysym.sym);
+                                }
+                        }
+                        if(e.type == SDL_KEYUP) //handle keyboard printable keys are 33 - 126
+                        {
+                            if(e.key.keysym.sym >= 33 && e.key.keysym.sym <= 126)
+                            {
+                                std::cout << (char)e.key.keysym.sym << std::endl;
+                                chip8->keyUp(e.key.keysym.sym);
+                                }
+                        }
                     }
                     // execute cycles
                     // 500hz
@@ -120,7 +137,6 @@ namespace GFX {
                         chip8->drawFlag = 0;
                     }
                     
-                    createPixel(41,63, gRenderer);
                     SDL_RenderPresent(gRenderer);
                     
                     // SDL_BlitSurface( screenSurface, NULL, gScreenSurface, NULL );

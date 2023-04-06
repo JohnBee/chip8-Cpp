@@ -21,7 +21,7 @@ class System {
         unsigned char sound_timer;
         // return stack
         // unsigned short stack[16];
-        std::vector<short> stack;
+        std::vector<unsigned short>stack;
         // stack pointer
         unsigned short sp;
 
@@ -38,6 +38,8 @@ class System {
         bool drawFlag;
         // 64 x 32  : 2048 pixel display 
         unsigned char gfx[64 * 32];
+        void keyUp(char key);
+        void keyDown(char key);
 };
 
 #endif

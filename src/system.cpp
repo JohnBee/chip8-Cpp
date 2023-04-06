@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <cstring>
+#include <unordered_map>
 
 unsigned char chip8_fontset[80] =
 { 
@@ -25,6 +26,11 @@ unsigned char chip8_fontset[80] =
   0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
 
+const std::unordered_map<char,char> keyMap{{'1',1},{'2',2},{'3',3},{'4', 0xc},
+                                           {'q',4},{'w',5},{'e',6},{'r',0xd},
+                                           {'a',7},{'s',8},{'d',9},{'f',0xe},
+                                           {'z',0xa},{'x',0},{'c',0xb},{'v',0xf}};
+
 unsigned char lastRandom = 0;
 
 // opcode handler
@@ -34,7 +40,16 @@ void System::unknownOpcode(unsigned short opcode){
                         << std::uppercase 
                         << std::hex << (0xFFFF & opcode) << std::endl;
 }
-
+void System::keyUp(char keyP){
+    if(keyMap.find(keyP) != keyMap.end()){
+       key[keyMap.at(keyP)] = 0;
+    }
+}
+void System::keyDown(char keyP){
+    if(keyMap.find(keyP) != keyMap.end()){
+        key[keyMap.at(keyP)] = 1;
+    }
+}
 void System::opcodeHandler(unsigned short opcode){
     // Fixed opcode
     // unknownOpcode(opcode);
@@ -45,13 +60,14 @@ void System::opcodeHandler(unsigned short opcode){
     }
     if(opcode == 0x00EE){
         // return from subroutine
-        pc = stack.back(); // stack is normall array[16] of short with counter? Want to try vector
+        pc = stack.back();
         stack.pop_back();
         pc +=2;
         return;
     }
     if((opcode & 0xF000) == 0x0000){// 0NNN call subroutine?
         stack.push_back(pc);
+        sp++;
         pc = opcode & 0x0FFF;
         return;
     } 
@@ -277,9 +293,9 @@ void System::opcodeHandler(unsigned short opcode){
         return;
     }
     if((opcode & 0xF000) == 0xE000){    // 0xE contains key press checks
-        if((opcode & 0x00FF) == 0x009E){ // 0xEX9E skip next instruction is key stored in VX is pressed
+        if((opcode & 0x00FF) == 0x009E){ // 0xEX9E skip next instruction if key is stored in VX is pressed
             unsigned char vx = (opcode & 0x0F00) >> 8;
-            if(V[vx] != 0){
+            if(key[V[vx]] != 0){
                 pc +=2;
             }
             pc +=2;
@@ -287,7 +303,7 @@ void System::opcodeHandler(unsigned short opcode){
         }
         if((opcode & 0x00FF) == 0x009E){ // 0xEXA1 skip next instruction is key stored in VX is not pressed
             unsigned char vx = (opcode & 0x0F00) >> 8;
-            if(V[vx] == 0){
+            if(key[V[vx]] == 0){
                 pc +=2;
             }
             pc +=2;
@@ -305,8 +321,14 @@ void System::opcodeHandler(unsigned short opcode){
             break;
             case (0x000A):{ //0xFX0A get key press, blocking operation, then store in vx
                 unsigned char vx = (opcode & 0x0F00) >> 8;
-                // V[vx] = keypress <- blocking keypress
-                pc +=2;
+                for(size_t iter = 0; iter < 16; iter++){
+                    if(key[iter] != 0){
+                        V[vx] = iter;
+                        // key[iter] = 0;
+                        pc +=2;
+                        return;
+                    }
+                } 
                 return;
             }
             break;
@@ -391,6 +413,7 @@ void System::initialise(romBuffer buffer){
 
     memset(memory, 0, 4096);
     memset(gfx, 0, 64*32);
+    memset(key, 0, 16);
     // load fontset
     for(int i = 0; i < 80; ++i)
         memory[i] = chip8_fontset[i];	
