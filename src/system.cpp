@@ -56,7 +56,7 @@ void System::keyDown(char keyP){
 }
 void System::opcodeHandler(unsigned short opcode){
     // Fixed opcode
-    unknownOpcode(opcode);
+    // unknownOpcode(opcode);
 
     if(opcode == 0x00E0){
         memset(gfx, 0, 64 * 32);
@@ -345,8 +345,6 @@ void System::opcodeHandler(unsigned short opcode){
                 for(size_t iter = 0; iter < 16; iter++){
                     if(key[iter] != 0){
                         V[vx] = iter;
-                        // key[iter] = 0;
-                        std::cout<< std::endl;
                         pc +=2;
                         return;
                     }

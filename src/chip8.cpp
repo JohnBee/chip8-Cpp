@@ -27,19 +27,11 @@ int main(int argv, char** args)
     
 
     System chip8(rb);
-    // chip8.initialise(rb);
     delete(rb.buffer); // we're done with the buffer clean up;
 
     GFX::init(&chip8);
     GFX::renderLoop();
     GFX::close();
-
-    if(chip8.drawFlag){
-        // Draw graphics
-    }
-    std::cout << argv << std::endl;
-    std::cout << args[0] << std::endl;
-
 
     return 0;
 }
