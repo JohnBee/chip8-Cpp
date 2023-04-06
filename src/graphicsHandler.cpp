@@ -90,7 +90,7 @@ namespace GFX {
                         {
                             if(e.key.keysym.sym >= 33 && e.key.keysym.sym <= 126)
                             {
-                                std::cout << (char)e.key.keysym.sym << std::endl;
+                                // std::cout << (char)e.key.keysym.sym << std::endl;
                                 chip8->keyDown(e.key.keysym.sym);
                                 }
                         }
@@ -98,7 +98,7 @@ namespace GFX {
                         {
                             if(e.key.keysym.sym >= 33 && e.key.keysym.sym <= 126)
                             {
-                                std::cout << (char)e.key.keysym.sym << std::endl;
+                                // std::cout << (char)e.key.keysym.sym << std::endl;
                                 chip8->keyUp(e.key.keysym.sym);
                                 }
                         }
@@ -107,7 +107,7 @@ namespace GFX {
                     // 500hz
                     auto now = std::chrono::high_resolution_clock::now();
                     std::chrono::duration<double, std::milli> elapsed = now - last;
-                    if(elapsed.count() > 2){
+                    if(elapsed.count() > 1.7){
                         chip8->cycle();
                         last = now;
                     }

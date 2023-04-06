@@ -24,12 +24,16 @@ class System {
         std::vector<unsigned short>stack;
         // stack pointer
         unsigned short sp;
+        unsigned char delayCounter = 0;
 
-        unsigned char key[16];
+        
 
         
 
     public:
+        System(romBuffer & rm);
+        
+        unsigned char key[16];
         void opcodeHandler(unsigned short opcode);
         void unknownOpcode(unsigned short opcode);
         void initialise(romBuffer buffer);

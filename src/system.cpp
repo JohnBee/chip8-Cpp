@@ -34,6 +34,10 @@ const std::unordered_map<char,char> keyMap{{'1',1},{'2',2},{'3',3},{'4', 0xc},
 unsigned char lastRandom = 0;
 
 // opcode handler
+System::System(romBuffer & rm){
+    initialise(rm);
+
+};
 void System::unknownOpcode(unsigned short opcode){
     std::cout << "Unkown Opcode: " << std::setfill('0') 
                         << std::setw(2) 
@@ -52,9 +56,10 @@ void System::keyDown(char keyP){
 }
 void System::opcodeHandler(unsigned short opcode){
     // Fixed opcode
-    // unknownOpcode(opcode);
+    unknownOpcode(opcode);
+
     if(opcode == 0x00E0){
-        // clear the screen;
+        memset(gfx, 0, 64 * 32);
         pc +=2;
         return;
     }
@@ -66,8 +71,8 @@ void System::opcodeHandler(unsigned short opcode){
         return;
     }
     if((opcode & 0xF000) == 0x0000){// 0NNN call subroutine?
+        // stack.push_back(pc);
         stack.push_back(pc);
-        sp++;
         pc = opcode & 0x0FFF;
         return;
     } 
@@ -165,13 +170,18 @@ void System::opcodeHandler(unsigned short opcode){
             case 0x0004:{ //0x8XY4 set VX += VY w/ carry flag V[F]
                 unsigned char vx = (opcode & 0x0F00) >> 8;
                 unsigned char vy = (opcode & 0x00F0) >> 4;
+                char x;
                 if(V[vy] > (0xFF - V[vx])){ //if VY is bigger than the different from current VX to 255, then we will overflow
-                    V[0xF] = 1; // Set carry flag
+                    
+                    // Set carry flag
+                    x = 1;
                 }
                 else{
-                    V[0xF] = 0;
+                    
+                    x = 0;
                 }
                 V[vx] += V[vy];
+                V[0xF] = x; 
                 pc+=2;
                 return;
             }
@@ -179,13 +189,15 @@ void System::opcodeHandler(unsigned short opcode){
             case 0x0005:{ //0x8XY5 set VX -= VY w/ carry flag V[F] set 0 if borrow else 1
                 unsigned char vx = (opcode & 0x0F00) >> 8;
                 unsigned char vy = (opcode & 0x00F0) >> 4;
+                char x;
                 if(V[vy] > V[vx]){ //if VY is bigger than VX then it will underflow and need to borrow
-                    V[0xF] = 0; // borrow set carry flow to 0
+                    x = 0; // borrow set carry flow to 0
                 }
                 else{
-                    V[0xF] = 1;
+                    x = 1;
                 }
                 V[vx] -= V[vy];
+                V[0xF] = x;
                 pc+=2;
                 return;
             }
@@ -193,8 +205,10 @@ void System::opcodeHandler(unsigned short opcode){
             case 0x0006:{ //0x8XY6 store LSB of VX in VF, then shift VX to right by 1
                 unsigned char vx = (opcode & 0x0F00) >> 8;
                 // unsigned char vy = (opcode & 0x00F0) >> 4;
-                V[0xF] = (V[vx] & 0x01); // store lsb of VX in VF
+                char x = (V[vx] & 0x01);
                 V[vx] >>= 1; // right shift x by 1
+                V[0xF] =  x;// store lsb of VX in VF
+                
                 pc+=2;
                 return;
             }
@@ -202,13 +216,16 @@ void System::opcodeHandler(unsigned short opcode){
             case 0x0007:{ //0x8XY7 VX = VY - VX 
                 unsigned char vx = (opcode & 0x0F00) >> 8;
                 unsigned char vy = (opcode & 0x00F0) >> 4;
+                char x;
                 if(V[vx] > V[vy]){
-                    V[0xF] = 0; //borrow
+                    
+                    x = 0; //borrow
                 }
                 else{
-                    V[0xF] = 1; // no borrow
+                    x = 1; // no borrow
                 }
                 V[vx] = V[vy] - V[vx];
+                V[0xF] = x;
                 pc+=2;
                 return;
             }
@@ -216,8 +233,10 @@ void System::opcodeHandler(unsigned short opcode){
             case 0x000E:{ //0x8XYE store msb of Vx to VF. left shift VX by 1.
                 unsigned char vx = (opcode & 0x0F00) >> 8;
                 // unsigned char vy = (opcode & 0x00F0) >> 4;
-                V[0xF] = (V[vx] & 0x80) != 0;
+                char x = (V[vx] & 0x80) != 0;
                 V[vx] <<= 1;
+                V[0xF] = x;
+                
                 pc+=2;
                 return;
             }
@@ -272,16 +291,18 @@ void System::opcodeHandler(unsigned short opcode){
         V[0xF] = 0;
         for(char yline = 0; yline < n; yline++){
             pixelLine = memory[I + yline];
-            for(char xline = 0; xline < 8 && (x + xline < 64); xline++){
+            // for(char xline = 0; xline < 8 && (x + xline < 64); xline++){
+            for(char xline = 0; xline < 8; xline++){
+
                 pixelStatus = pixelLine & (0x80 >> xline); // check pixels left to right
                 if(pixelStatus != 0){
-                    if((gfx[x + xline + (y + yline) * 64]) == 1){
+                    if((gfx[((x + xline) % 64) + ((y + yline) % 32) * 64]) == 1){
                     // pixel changed from set to unset, therefore flag
-                        gfx[x + xline + (y + yline) * 64] = 0;
+                        gfx[((x + xline) % 64) + ((y + yline) % 32) * 64] = 0;
                         V[0xF] = 1;
                     }
                     else{
-                        gfx[x + xline + (y + yline) * 64] = 1;
+                        gfx[((x + xline) % 64) + ((y + yline) % 32) * 64] = 1;
                     }
                 }
                 
@@ -301,7 +322,7 @@ void System::opcodeHandler(unsigned short opcode){
             pc +=2;
             return;
         }
-        if((opcode & 0x00FF) == 0x009E){ // 0xEXA1 skip next instruction is key stored in VX is not pressed
+        if((opcode & 0x00FF) == 0x00A1){ // 0xEXA1 skip next instruction is key stored in VX is not pressed
             unsigned char vx = (opcode & 0x0F00) >> 8;
             if(key[V[vx]] == 0){
                 pc +=2;
@@ -325,6 +346,7 @@ void System::opcodeHandler(unsigned short opcode){
                     if(key[iter] != 0){
                         V[vx] = iter;
                         // key[iter] = 0;
+                        std::cout<< std::endl;
                         pc +=2;
                         return;
                     }
@@ -414,6 +436,7 @@ void System::initialise(romBuffer buffer){
     memset(memory, 0, 4096);
     memset(gfx, 0, 64*32);
     memset(key, 0, 16);
+    // memset(stack, 0, 16*sizeof(short));
     // load fontset
     for(int i = 0; i < 80; ++i)
         memory[i] = chip8_fontset[i];	
@@ -433,7 +456,9 @@ void System::cycle(){
     opcodeHandler(opcode);
 
     // update timers
-    if(delay_timer > 0)
+    delayCounter = ((1 + delayCounter) % 10);
+
+    if(delay_timer > 0 && delayCounter == 0)
         delay_timer--;
     
     if(sound_timer > 0){

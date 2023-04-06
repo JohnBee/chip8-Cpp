@@ -9,9 +9,6 @@
 #include "romHandler.h"
 #include "graphicsHandler.h"
 
-void setupGraphics(){};
-void setupInput(){};
-
 using namespace std;
 
 
@@ -29,11 +26,8 @@ int main(int argv, char** args)
     }
     
 
-    setupGraphics();
-    setupInput();
-
-    System chip8;
-    chip8.initialise(rb);
+    System chip8(rb);
+    // chip8.initialise(rb);
     delete(rb.buffer); // we're done with the buffer clean up;
 
     GFX::init(&chip8);
