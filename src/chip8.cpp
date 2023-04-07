@@ -5,9 +5,9 @@
 #include <vector>
 #include <memory>
 
-#include "system.h"
-#include "romHandler.h"
-#include "graphicsHandler.h"
+#include "system.hpp"
+#include "romHandler.hpp"
+#include "graphicsHandler.hpp"
 
 using namespace std;
 

@@ -2,7 +2,7 @@
 #define SDLHANDLER_H
 
 #include <SDL2/SDL.h>
-#include "system.h"
+#include "system.hpp"
 
 extern SDL_Window* gWindow;
 extern SDL_Surface* gScreenSurface;

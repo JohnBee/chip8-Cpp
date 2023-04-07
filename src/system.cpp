@@ -1,5 +1,5 @@
-#include "system.h"
-#include "romHandler.h"
+#include "system.hpp"
+#include "romHandler.hpp"
 #include <iomanip>
 #include <stdlib.h>
 #include <time.h>

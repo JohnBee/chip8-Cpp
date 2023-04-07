@@ -2,8 +2,8 @@
 #include <iostream>
 #include <chrono>
 
-#include "graphicsHandler.h"
-#include "system.h"
+#include "graphicsHandler.hpp"
+#include "system.hpp"
 
 //The window we'll be rendering to
 SDL_Window * gWindow = NULL;
