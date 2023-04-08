@@ -1,17 +1,14 @@
 #include <iostream>
-#include <SDL2\SDL.h>
 #include <fstream>
 #include <exception>
 #include <vector>
 #include <memory>
 
-#include "system.hpp"
-#include "romHandler.hpp"
-#include "graphicsHandler.hpp"
+#include "chip8/system.hpp"
+#include "chip8/romHandler.hpp"
+#include "chip8/graphicsHandler.hpp"
 
 using namespace std;
-
-
 
 int main(int argv, char** args)
 {

@@ -1,7 +1,7 @@
 #ifndef SDLHANDLER_H
 #define SDLHANDLER_H
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include "system.hpp"
 
 extern SDL_Window* gWindow;

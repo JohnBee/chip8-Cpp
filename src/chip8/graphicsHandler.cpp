@@ -1,4 +1,4 @@
-#include <SDL2\SDL.h>
+#include <SDL.h>
 #include <iostream>
 #include <chrono>
 
@@ -114,19 +114,11 @@ namespace GFX {
                 
                     //Apply the image
                     if(chip8->drawFlag){
-                        SDL_Surface * screenSurface = SDL_GetWindowSurface(gWindow);
                         
                         // Clear the entire screen to our selected color.
                         SDL_SetRenderDrawColor( gRenderer, 0, 0, 0, 0 );
                         SDL_RenderClear(gRenderer);
 
-                        // Up until now everything was drawn behind the scenes.
-                        // This will show the new, red contents of the window.
-
-
-                        //Fill the surface white
-                        // SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
-                        
                         for(size_t y = 0; y < 32; y++){
                             for(size_t x = 0; x < 64; x++){
                                 if(chip8->gfx[y*64 + x] != 0){
@@ -138,11 +130,6 @@ namespace GFX {
                     }
                     
                     SDL_RenderPresent(gRenderer);
-                    
-                    // SDL_BlitSurface( screenSurface, NULL, gScreenSurface, NULL );
-                
-                    //Update the surface
-                    //SDL_UpdateWindowSurface( gWindow );
                 }
     }
 
