@@ -39,8 +39,8 @@ A Chip-8 Interpreter/Emulator Written in C++.
 # Testing
 Testing of accuracy was accomplished using an assortment of Test Roms:
 
-https://github.com/corax89/chip8-test-rom
-https://github.com/Timendus/chip8-test-suite
+1. https://github.com/corax89/chip8-test-rom
+2. https://github.com/Timendus/chip8-test-suite
 
 # Requirements
 ```
