@@ -2,12 +2,16 @@
 A Chip-8 Interpreter/Emulator Written in C++.
 
 # Demo
+[Breakout](https://github.com/JohnEarnest/chip8Archive/tree/master/src/br8kout)
 ![Breakout](/demo/CHIP-8_EMULATOR_breakout.gif)
-https://github.com/JohnEarnest/chip8Archive/tree/master/src/br8kout
+
+[Snake](https://github.com/JohnEarnest/chip8Archive/tree/master/src/snake)
 ![Snake](/demo/CHIP-8_EMULATOR_snake.gif)
-https://github.com/JohnEarnest/chip8Archive/tree/master/src/snake
+
+[Flight Runner](https://github.com/JohnEarnest/chip8Archive/tree/master/src/flightrunner)
 ![FlightRunner](/demo/CHIP-8_EMULATOR_flightrunner.gif)
-https://github.com/JohnEarnest/chip8Archive/tree/master/src/flightrunner
+
+
 # Building
 1. [Install SDL2](https://github.com/libsdl-org/SDL/releases/tag/release-2.26.5) for your Target
 2. Setup CMake Cache using CLI or CMake-GUI to point to your SDL2 install library and headers location.
