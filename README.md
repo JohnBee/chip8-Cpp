@@ -3,12 +3,15 @@ A Chip-8 Interpreter/Emulator Written in C++.
 
 # Demo
 [Breakout](https://github.com/JohnEarnest/chip8Archive/tree/master/src/br8kout)
+
 ![Breakout](/demo/CHIP-8_EMULATOR_breakout.gif)
 
 [Snake](https://github.com/JohnEarnest/chip8Archive/tree/master/src/snake)
+
 ![Snake](/demo/CHIP-8_EMULATOR_snake.gif)
 
 [Flight Runner](https://github.com/JohnEarnest/chip8Archive/tree/master/src/flightrunner)
+
 ![FlightRunner](/demo/CHIP-8_EMULATOR_flightrunner.gif)
 
 
