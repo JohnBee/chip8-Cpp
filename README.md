@@ -16,7 +16,7 @@ A Chip-8 Interpreter/Emulator Written in C++.
 
 
 # Building
-1. [Install SDL2](https://github.com/libsdl-org/SDL/releases/tag/release-2.26.5) for your Target
+1. [Install SDL2](https://github.com/libsdl-org/SDL/releases/tag/release-2.26.5) for your Target.
 2. Setup CMake Cache using CLI or CMake-GUI to point to your SDL2 install library and headers location.
 3. Create a Build Folder e.g.
    ```
@@ -38,6 +38,7 @@ A Chip-8 Interpreter/Emulator Written in C++.
 
 # Testing
 Testing of accuracy was accomplished using an assortment of Test Roms:
+
 https://github.com/corax89/chip8-test-rom
 https://github.com/Timendus/chip8-test-suite
 
